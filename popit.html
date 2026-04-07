@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MA VIHKAN POP IT'E</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d0418;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Bubble pop background */
+        .bg-bubble {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(200, 50, 255, 0.15), rgba(150, 0, 255, 0.05));
+            border: 1px solid rgba(200, 50, 255, 0.1);
+            z-index: 0;
+            pointer-events: none;
+            animation: bubbleFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes bubbleFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-30px) scale(1.1); opacity: 0.5; }
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #1a0a2e 0%, #080012 70%);
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 10vw, 8rem);
+            text-align: center;
+            color: #cc44ff;
+            text-shadow: 0 0 20px rgba(200, 50, 255, 0.5), 0 0 60px rgba(200, 50, 255, 0.2), 0 4px 0 #4a0077;
+            animation: popPulse 2s ease-in-out infinite;
+            letter-spacing: 4px;
+            user-select: none;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 3vw, 1.8rem);
+            color: #dd88ff;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0.8;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        .annoy-meter-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .annoy-meter-container p {
+            font-size: 1.2rem;
+            color: #bb66ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .annoy-meter {
+            width: 300px;
+            height: 30px;
+            background: #1a0a2e;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #cc44ff;
+            position: relative;
+        }
+
+        .annoy-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8844cc, #cc44ff, #ff44ee);
+            border-radius: 15px;
+            transition: width 2.5s ease-out;
+            box-shadow: 0 0 20px rgba(200, 50, 255, 0.5);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            color: #bb66ff;
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        /* Reasons */
+        .reasons {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reasons h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #cc55ff;
+            text-align: center;
+            margin-bottom: 60px;
+            text-shadow: 0 0 15px rgba(200, 50, 255, 0.4);
+        }
+
+        .reason-card {
+            background: linear-gradient(135deg, #120822, #1a0a30);
+            border: 1px solid #2a1540;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reason-card.visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .reason-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #cc44ff, #ff44cc, #cc44ff);
+        }
+
+        .reason-card .number {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #cc44ff;
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .reason-card h3 {
+            font-size: 1.5rem;
+            color: #dd88ff;
+            margin-bottom: 10px;
+        }
+
+        .reason-card p {
+            color: #aa88cc;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Pop It popper game */
+        .popper {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #150a28 0%, #0d0418 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .popper h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #cc55ff;
+            margin-bottom: 20px;
+        }
+
+        .popper > p {
+            color: #9977aa;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .pop-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 25px;
+            background: #0a0515;
+            border-radius: 20px;
+            border: 2px solid #2a1540;
+        }
+
+        .pop-bubble {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #dd66ff, #aa33dd, #7711aa);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 -3px 6px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .pop-bubble:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .pop-bubble.popped {
+            background: #1a0a2e;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.5);
+            transform: scale(0.85);
+            cursor: default;
+            filter: none;
+        }
+
+        .pop-bubble.popped::after {
+            content: '💀';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .pop-count {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: #bb66ff;
+            margin-top: 20px;
+        }
+
+        .reset-btn {
+            margin-top: 15px;
+            background: transparent;
+            border: 2px solid #cc44ff;
+            color: #cc44ff;
+            padding: 10px 30px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #cc44ff;
+            color: #0d0418;
+        }
+
+        /* Rant section */
+        .rants {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rants h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #cc55ff;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .rant {
+            text-align: center;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-top: 1px solid #2a1540;
+            border-bottom: 1px solid #2a1540;
+            position: relative;
+        }
+
+        .rant .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .rant p {
+            font-size: 1.3rem;
+            color: #dd88ff;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .rant .context {
+            margin-top: 15px;
+            color: #664488;
+            font-size: 0.9rem;
+            font-style: normal;
+        }
+
+        /* Sound counter */
+        .sound-hell {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #150a28 0%, #0d0418 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .sound-hell h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #cc55ff;
+            margin-bottom: 20px;
+        }
+
+        .sound-hell > p {
+            color: #9977aa;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .pop-spam-btn {
+            background: linear-gradient(135deg, #aa22dd, #cc44ff);
+            color: #fff;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(200, 50, 255, 0.3);
+        }
+
+        .pop-spam-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(200, 50, 255, 0.5);
+        }
+
+        .pop-spam-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spam-counter {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #bb66ff;
+            font-family: 'Bangers', cursive;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #443355;
+            border-top: 1px solid #1a0a2e;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer span {
+            color: #cc44ff;
+        }
+
+        footer a {
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            z-index: 1000;
+            animation: particleFade 1.5s forwards;
+        }
+
+        /* Animations */
+        @keyframes popPulse {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.04); }
+            50% { transform: scale(0.98); }
+            70% { transform: scale(1.02); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes particleFade {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(0.3); }
+        }
+
+        .screen-shake {
+            animation: screenShake 0.3s ease-out;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-4px, 3px); }
+            40% { transform: translate(5px, -2px); }
+            60% { transform: translate(-3px, 4px); }
+            80% { transform: translate(4px, -3px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 id="title">MA VIHKAN POP IT'E</h1>
+        <p class="subtitle">See lõputu, mõttetu, ajusurmav klõpsutamine. Pop. Pop. Pop. LÕPETA.</p>
+        <div class="annoy-meter-container">
+            <p>TÜÜTUSE TASE:</p>
+            <div class="annoy-meter">
+                <div class="annoy-fill" id="annoyFill"></div>
+            </div>
+            <p id="annoyLabel" style="margin-top: 10px; font-size: 0.9rem; color: #dd88ff;">Arvutan tüütust...</p>
+        </div>
+        <p class="scroll-hint">Keri alla, et kogeda kogu frustratsiooni</p>
+    </section>
+
+    <!-- Reasons -->
+    <section class="reasons">
+        <h2>MIKS POP IT'ID ON KATASTROOF</h2>
+
+        <div class="reason-card" data-delay="0">
+            <span class="number">#1</span>
+            <h3>See HELI ei lõpe KUNAGI</h3>
+            <p>Pop. Pop. Pop. Pop. Pop. Pop. Kujuta ette, et istud bussis ja keegi su kõrval popib neid nagu elu sõltuks sellest. Pop. Pop. Pop. Sa ei saa seda peatada. Sa ei saa põgeneda. See on heli, mis jääb su ajju elama.</p>
+        </div>
+
+        <div class="reason-card" data-delay="100">
+            <span class="number">#2</span>
+            <h3>See on MULLEPLAST kuid HALVEM</h3>
+            <p>Mulleplast oli tasuta, tuli pakiga kaasa ja sai ära visata. Pop It on mulleplast, mille eest sa MAKSAD 10 eurot, ja siis pead seda igavesti hoidma. Me maksame sõna otseses mõttes raha HALVEMA mulleplasti eest.</p>
+        </div>
+
+        <div class="reason-card" data-delay="200">
+            <span class="number">#3</span>
+            <h3>IGAL POOL igal kujul</h3>
+            <p>Pop It telefoniümbris. Pop It võtmehoidja. Pop It seljakott. Pop It MATEMAATIKARAAMAT. Kas tõesti peab iga ese olema kaetud silikoonmullidega? Kas me ei saa MITTE MIDAGI omada, mis ei popi?</p>
+        </div>
+
+        <div class="reason-card" data-delay="300">
+            <span class="number">#4</span>
+            <h3>See EI OLE mänguasi</h3>
+            <p>Mis on mängureeglid? Pole. Mis on eesmärk? Pole. Sa lihtsalt vajutad mulle ühelt poolt ja käänad ümber ja vajutad uuesti. See on Sisyphose karistus, aga silikoonist ja vikerkaarevärvi.</p>
+        </div>
+
+        <div class="reason-card" data-delay="400">
+            <span class="number">#5</span>
+            <h3>Tunni ajal KEELATUD aga ikka seal</h3>
+            <p>Iga õpetaja unistuste halbjuur. "Pane pop it ära!" kuuleb õpetaja 47 korda päevas. Aga ei, Marten peab kolmanda tunni matemaatikas oma vikerkaarevärvi dinosauruse-kujulist Pop It'i popima.</p>
+        </div>
+
+        <div class="reason-card" data-delay="500">
+            <span class="number">#6</span>
+            <h3>KESTVUS on petlik</h3>
+            <p>"See kestab igavesti!" Jah, see plastiktükk kestab igavesti — prügilas. Aga su lapse huvi selle vastu? Umbes 4 päeva. Siis on see sahtli põhjas koos kõigi teiste unustatud fidget-mänguasjadega.</p>
+        </div>
+
+        <div class="reason-card" data-delay="600">
+            <span class="number">#7</span>
+            <h3>"Rahustav" on VALE reklaam</h3>
+            <p>Tead, mis mind rahustaks? Kui keegi EI popiks mu kõrval. See pop-pop-pop heli on rahustav ainult popijale. Kõigile teistele on see vaimne piinamine. See peaks tulema hoiatussildiga.</p>
+        </div>
+    </section>
+
+    <!-- Pop It Popper Game -->
+    <section class="popper">
+        <h2>POPI NEED ÄRA</h2>
+        <p>Vajuta mullidele. Tunne end natuke paremini. (See on irooniline.)</p>
+        <div class="pop-grid" id="popGrid"></div>
+        <p class="pop-count">Popitud: <span id="popCount">0</span></p>
+        <button class="reset-btn" id="resetBtn">RESET (sest see ongi ju mõttetu tsükkel)</button>
+    </section>
+
+    <!-- Rants -->
+    <section class="rants">
+        <h2>PARIMAD VIHAHOOD</h2>
+
+        <div class="rant">
+            <div class="emoji">🚌</div>
+            <p>"Terve bussireis. 45 minutit. Laps mu taga. Pop it. Iga. Üksik. Sekund. Ma nägin värve, mida inimsilm ei peaks nägema."</p>
+            <div class="context">- Ühistranspordi veteraan</div>
+        </div>
+
+        <div class="rant">
+            <div class="emoji">🏫</div>
+            <p>"Mul on klassis 28 last. 23-l on pop it. See kõlab nagu popkorn, aga popkorn ei tee mind hulluks."</p>
+            <div class="context">- Õpetaja, kes kaalub karjäärivahetust</div>
+        </div>
+
+        <div class="rant">
+            <div class="emoji">🛒</div>
+            <p>"Läksin poodi PIIMA ostma. Laps nägi pop it'e. Olime poes TUND AEGA. Läksin ilma piimata, aga kolme pop it'iga."</p>
+            <div class="context">- Lapsevanem, kes on kaotanud kontrolli</div>
+        </div>
+
+        <div class="rant">
+            <div class="emoji">😴</div>
+            <p>"Mu tütar popib pop it'i VOODIS. Enne magamajäämist. Ma kuulen seda läbi seina. Pop. Pop. Pop. Ma ei maga enam."</p>
+            <div class="context">- Unetusvangist</div>
+        </div>
+    </section>
+
+    <!-- Sound Hell -->
+    <section class="sound-hell">
+        <h2>HELIPÕRGU SIMULAATOR</h2>
+        <p>Vajuta nuppu, et simuleerida seda, mida me kannatame. Iga klikk = üks pop, mis sa kunagi tagasi ei saa.</p>
+        <button class="pop-spam-btn" id="spamBtn">POP!</button>
+        <p class="spam-counter">Elus kaotatud pop-helisid: <span id="spamCount">0</span></p>
+    </section>
+
+    <footer>
+        <p>Tehtud <span>frustratsiooni</span> ja <span>JavaScriptiga</span>.</p>
+        <p style="margin-top: 10px;">
+            Vaata ka:
+            <a href="index.html" style="color: #ff4444;">Ma vihkan squishisid</a> |
+            <a href="slime.html" style="color: #00ff44;">Ma vihkan slime'i</a> |
+            <a href="meem.html" style="color: #00aaff;">Ma vihkan 67 meemi</a>
+        </p>
+    </footer>
+
+    <script>
+        // Annoy meter
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('annoyFill').style.width = '100%';
+                setTimeout(() => {
+                    const label = document.getElementById('annoyLabel');
+                    label.textContent = 'HOIATUS: TÜÜTUS ÜLETAB KÕIK PIIRID';
+                    label.style.color = '#cc44ff';
+                    label.style.fontWeight = '900';
+                }, 2500);
+            }, 500);
+        });
+
+        // Background bubbles
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bg-bubble';
+            const size = 20 + Math.random() * 60;
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.top = Math.random() * 100 + 'vh';
+            bubble.style.animationDuration = 4 + Math.random() * 4 + 's';
+            document.body.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 8000);
+        }
+        setInterval(createBubble, 1200);
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reason-card').forEach(card => observer.observe(card));
+
+        // Pop It Grid Game
+        const grid = document.getElementById('popGrid');
+        const popCountEl = document.getElementById('popCount');
+        let popCount = 0;
+
+        function createGrid() {
+            grid.innerHTML = '';
+            for (let i = 0; i < 48; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'pop-bubble';
+
+                // Random colors
+                const hue = 260 + Math.random() * 60;
+                const sat = 70 + Math.random() * 30;
+                const light = 50 + Math.random() * 20;
+                bubble.style.background = `radial-gradient(circle at 35% 35%, hsl(${hue}, ${sat}%, ${light + 15}%), hsl(${hue}, ${sat}%, ${light}%), hsl(${hue}, ${sat - 20}%, ${light - 15}%))`;
+
+                bubble.addEventListener('click', (e) => {
+                    if (bubble.classList.contains('popped')) return;
+                    e.stopPropagation();
+
+                    bubble.classList.add('popped');
+                    popCount++;
+                    popCountEl.textContent = popCount;
+
+                    document.body.classList.add('screen-shake');
+                    setTimeout(() => document.body.classList.remove('screen-shake'), 200);
+
+                    for (let j = 0; j < 3; j++) {
+                        spawnParticle(e.clientX, e.clientY);
+                    }
+                });
+
+                grid.appendChild(bubble);
+            }
+        }
+
+        createGrid();
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.querySelectorAll('.pop-bubble').forEach(b => b.classList.remove('popped'));
+        });
+
+        // Particles
+        const hateWords = ['POP!', 'LÕPETA!', 'AITAB!', 'EI JÄLLE!', '😤', '🤯', '💥', 'VAIT!', 'PIISAB!'];
+
+        function spawnParticle(x, y) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.textContent = hateWords[Math.floor(Math.random() * hateWords.length)];
+            p.style.left = x + (Math.random() * 60 - 30) + 'px';
+            p.style.top = y + 'px';
+            p.style.color = `hsl(${260 + Math.random() * 60}, 100%, ${50 + Math.random() * 30}%)`;
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1500);
+        }
+
+        document.addEventListener('click', (e) => spawnParticle(e.clientX, e.clientY));
+
+        // Spam counter
+        let spamCount = 0;
+        const spamEl = document.getElementById('spamCount');
+        document.getElementById('spamBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            spamCount++;
+            spamEl.textContent = spamCount.toLocaleString('et-EE');
+
+            const btn = document.getElementById('spamBtn');
+            const msgs = ['POP!', 'JÄLLE!', 'MIKS?!', 'LÕPETA!', 'EI!', 'POP!', 'AAAA!'];
+            btn.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+            btn.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                btn.textContent = 'POP!';
+            }, 300);
+
+            for (let i = 0; i < 6; i++) {
+                spawnParticle(e.clientX, e.clientY);
+            }
+        });
+
+        // Rotating titles
+        const titles = [
+            'MA VIHKAN POP IT\'E',
+            'POP IT = PIINARIIST',
+            'LÕPETA POPIMINE',
+            'POP IT ON MÜRGEL',
+            'KEELA POP IT\'ID ÄRA'
+        ];
+        let idx = 0;
+        setInterval(() => {
+            idx = (idx + 1) % titles.length;
+            document.getElementById('title').textContent = titles[idx];
+        }, 3000);
+    </script>
+</body>
+</html>

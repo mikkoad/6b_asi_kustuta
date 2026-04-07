@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MA VIHKAN 67 MEEMI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0d18;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Floating 67 background */
+        .bg-67 {
+            position: fixed;
+            font-family: 'Bangers', cursive;
+            color: rgba(0, 170, 255, 0.06);
+            z-index: 0;
+            pointer-events: none;
+            animation: float67 5s linear forwards;
+            font-size: 4rem;
+            user-select: none;
+        }
+
+        @keyframes float67 {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #0a1a2e 0%, #040810 70%);
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 10vw, 8rem);
+            text-align: center;
+            color: #00aaff;
+            text-shadow: 0 0 20px rgba(0, 170, 255, 0.5), 0 0 60px rgba(0, 170, 255, 0.2), 3px 3px 0 #003366;
+            animation: glitchPulse 2s ease-in-out infinite;
+            letter-spacing: 4px;
+            user-select: none;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 3vw, 1.8rem);
+            color: #66ccff;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0.8;
+            max-width: 650px;
+            padding: 0 20px;
+        }
+
+        .brainrot-meter-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .brainrot-meter-container p {
+            font-size: 1.2rem;
+            color: #44aaff;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .brainrot-meter {
+            width: 300px;
+            height: 30px;
+            background: #0a1525;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #00aaff;
+            position: relative;
+        }
+
+        .brainrot-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0066cc, #00aaff, #44ddff);
+            border-radius: 15px;
+            transition: width 2.5s ease-out;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            color: #44aaff;
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        /* Reasons */
+        .reasons {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reasons h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33bbff;
+            text-align: center;
+            margin-bottom: 60px;
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
+        }
+
+        .reason-card {
+            background: linear-gradient(135deg, #080d1a, #0a1525);
+            border: 1px solid #152540;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transform: scale(0.9) rotate(-2deg);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reason-card.visible {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+
+        .reason-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #00aaff, #0066cc, #00aaff);
+        }
+
+        .reason-card .number {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #00aaff;
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .reason-card h3 {
+            font-size: 1.5rem;
+            color: #66ccff;
+            margin-bottom: 10px;
+        }
+
+        .reason-card p {
+            color: #8899bb;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* 67 Swatter Game */
+        .swatter {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #0a1525 0%, #0a0d18 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .swatter h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33bbff;
+            margin-bottom: 20px;
+        }
+
+        .swatter > p {
+            color: #667799;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .swat-arena {
+            width: 100%;
+            max-width: 700px;
+            height: 420px;
+            margin: 0 auto;
+            background: #060a14;
+            border-radius: 20px;
+            border: 2px solid #152540;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .floating-67 {
+            position: absolute;
+            font-family: 'Bangers', cursive;
+            font-size: 2.5rem;
+            color: #00aaff;
+            cursor: pointer;
+            user-select: none;
+            animation: bob67 3s ease-in-out infinite;
+            transition: all 0.15s;
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.4);
+        }
+
+        .floating-67:hover {
+            transform: scale(1.3);
+            color: #ff4444;
+        }
+
+        .floating-67.swatted {
+            animation: swatAnim 0.5s forwards !important;
+        }
+
+        .swat-count {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: #44aaff;
+            margin-top: 20px;
+        }
+
+        /* Cringe gallery */
+        .gallery {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33bbff;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .cringe-item {
+            text-align: center;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-top: 1px solid #152540;
+            border-bottom: 1px solid #152540;
+            position: relative;
+        }
+
+        .cringe-item .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .cringe-item p {
+            font-size: 1.3rem;
+            color: #66ccff;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .cringe-item .context {
+            margin-top: 15px;
+            color: #445577;
+            font-size: 0.9rem;
+            font-style: normal;
+        }
+
+        /* 67 Spam zone */
+        .spam-zone {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #0a1525 0%, #0a0d18 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .spam-zone h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33bbff;
+            margin-bottom: 20px;
+        }
+
+        .spam-zone > p {
+            color: #667799;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .spam-btn {
+            background: linear-gradient(135deg, #0066cc, #00aaff);
+            color: #fff;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(0, 170, 255, 0.3);
+        }
+
+        .spam-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 170, 255, 0.5);
+        }
+
+        .spam-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spam-output {
+            margin-top: 25px;
+            font-size: 2rem;
+            color: #00aaff;
+            font-family: 'Bangers', cursive;
+            min-height: 50px;
+            transition: all 0.3s;
+            letter-spacing: 6px;
+        }
+
+        .spam-counter {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: #445577;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #334455;
+            border-top: 1px solid #152030;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer span {
+            color: #00aaff;
+        }
+
+        footer a {
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            z-index: 1000;
+            animation: particleFade 1.5s forwards;
+        }
+
+        /* Animations */
+        @keyframes glitchPulse {
+            0%, 100% { transform: scale(1) skewX(0deg); }
+            10% { transform: scale(1.02) skewX(-2deg); }
+            20% { transform: scale(1) skewX(0deg); }
+            30% { transform: scale(1.01) skewX(1deg); }
+            40%, 100% { transform: scale(1) skewX(0deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes bob67 {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-12px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(-3deg); }
+        }
+
+        @keyframes swatAnim {
+            0% { transform: scale(1); opacity: 1; }
+            20% { transform: scale(1.5); color: #ff0000; }
+            100% { transform: scale(0) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes particleFade {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(0.3); }
+        }
+
+        .screen-shake {
+            animation: screenShake 0.3s ease-out;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-4px, 2px); }
+            40% { transform: translate(3px, -3px); }
+            60% { transform: translate(-2px, 4px); }
+            80% { transform: translate(4px, -2px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 id="title">MA VIHKAN 67 MEEMI</h1>
+        <p class="subtitle">"SiX sEvEn!!! 🤪🫴" — Iga laps igal pool kogu aeg. Lõpetage. Palun. Ma anun.</p>
+        <div class="brainrot-meter-container">
+            <p>BRAINROT TASE:</p>
+            <div class="brainrot-meter">
+                <div class="brainrot-fill" id="brainrotFill"></div>
+            </div>
+            <p id="brainrotLabel" style="margin-top: 10px; font-size: 0.9rem; color: #66ccff;">Mõõdan ajusurma...</p>
+        </div>
+        <p class="scroll-hint">Keri alla, et kogeda kogu valu</p>
+    </section>
+
+    <!-- Reasons -->
+    <section class="reasons">
+        <h2>MIKS 67 MEEM ON KATASTROOF</h2>
+
+        <div class="reason-card" data-delay="0">
+            <span class="number">#1</span>
+            <h3>Sellel EI OLE TÄHENDUST</h3>
+            <p>Küsid "mida 67 tähendab?" ja vastus on... mitte midagi. Sõna otseses mõttes MITTE MIDAGI. Skrilla ise ütles, et ta ei pannud sellele tähendust. See on lihtsalt kaks numbrit. Kaks. Numbrit. Ja terve maailm kaotab selle pärast mõistuse.</p>
+        </div>
+
+        <div class="reason-card" data-delay="100">
+            <span class="number">#2</span>
+            <h3>See KÄELIIGUTUS</h3>
+            <p>Käed üles, peopesad taeva poole, üles-alla nagu mingi imelik pump. KÕIK teevad seda. Bussis. Koolis. Poes. Tänaval. Su väike vend teeb seda hommikusöögil. See on nagu zombiepandeemia aga käeliigutusega.</p>
+        </div>
+
+        <div class="reason-card" data-delay="200">
+            <span class="number">#3</span>
+            <h3>IGAL POOL kogu aeg</h3>
+            <p>Said kontrolltööl 67%? "KUUSSEITSE!!!" Avad raamatu lehelt 67? "KUUSSEITSEEEE!" Kell on 6:07? Arva ära. See number on nüüd rikutud. Ma ei saa enam normaalselt numbreid vaadata.</p>
+        </div>
+
+        <div class="reason-card" data-delay="300">
+            <span class="number">#4</span>
+            <h3>Koolid KEELAVAD seda</h3>
+            <p>See meem on nii tüütu, et KOOLID peavad selle ÄRA KEELAMA. Mõtle sellele. Kahe numbri ütlemine on keelatud. Me elame sellises ühiskonnas. Aga kas see peatab kedagi? Ei. Marten karjub seda ikkagi vahetunnis.</p>
+        </div>
+
+        <div class="reason-card" data-delay="400">
+            <span class="number">#5</span>
+            <h3>Brändid hüppasid peale</h3>
+            <p>McDonald's. Pizza Hut. Fortnite. KÕIK proovivad olla "hip" ja kasutavad 67. Kui su vanaema burger-firma kasutab su meemi, siis on see SURNUD. Aga ei, lapsed arvavad ikka et see on lahe. Dictionary.com tegi sellest AASTA SÕNA.</p>
+        </div>
+
+        <div class="reason-card" data-delay="500">
+            <span class="number">#6</span>
+            <h3>See on PUHAS brainrot</h3>
+            <p>67 on brainrot kehastunud. See on digitaalne ajusurm audio kujul. Sa kuuled "doot doot... SIX SEVEN" ja su viimased ajurakud lihtsalt loobuvad. Skrilla lõi helirelva ja lapsed kasutavad seda vabatahtlikult enda peal.</p>
+        </div>
+
+        <div class="reason-card" data-delay="600">
+            <span class="number">#7</span>
+            <h3>See EI SURE KUNAGI</h3>
+            <p>Iga normaalne meem elab paar nädalat ja sureb. Aga 67? See muteerub. 67 kid. LaMelo Ball. South Park. Peaminister Starmer tegi seda koolis ja pidi VABANDAMA. See meem on tuumakatastroof, mis lihtsalt laieneb ja laieneb.</p>
+        </div>
+    </section>
+
+    <!-- 67 Swatter Game -->
+    <section class="swatter">
+        <h2>VAIGISTA 67</h2>
+        <p>Kliki hõljuvatele 67-dele, et neid vaigistada. Nad tulevad alati tagasi. Nagu päriselus.</p>
+        <div class="swat-arena" id="swatArena"></div>
+        <p class="swat-count">Vaigistatud: <span id="swatCount">0</span></p>
+    </section>
+
+    <!-- Cringe Gallery -->
+    <section class="gallery">
+        <h2>TRAUMAATILISED KOGEMUSED</h2>
+
+        <div class="cringe-item">
+            <div class="emoji">🏀</div>
+            <p>"Korvpallimatšil. Iga kord kui keegi skooris, terve tribüün: 'KUUSSEITSE!' Ma tulin sporti vaatama, mitte ajusurmast osa võtma."</p>
+            <div class="context">- Spordiala endine fänn</div>
+        </div>
+
+        <div class="cringe-item">
+            <div class="emoji">🏫</div>
+            <p>"Matemaatikatund. Vastus oli 67. Ma ei jõudnud isegi tahvlile kirjutada, kui terve klass karjus seda. Õpetaja vaikis. Õpetaja silmad olid tühjad."</p>
+            <div class="context">- Matemaatikaõpetaja, kes kaalub pensionit</div>
+        </div>
+
+        <div class="cringe-item">
+            <div class="emoji">🍔</div>
+            <p>"McDonald'sis. Tellimus number 67. Kassapidaja ütles numbri. Kolm last karjusid samaaegselt, tegid käeliigutust ja filmisid TikTokki. Ma sõin oma burgeri parklas. Üksi. Vaikuses."</p>
+            <div class="context">- Kiirtoidukoha ellujääja</div>
+        </div>
+
+        <div class="cringe-item">
+            <div class="emoji">😴</div>
+            <p>"Mu poeg ütleb 'kuusseitse' enne magamaminekut. Nagu palvet. Ta sosistab seda padjale. Ma kuulsin seda beebimonitorist. Ma ei maga enam."</p>
+            <div class="context">- Lapsevanem, kes on kaotanud lootuse</div>
+        </div>
+    </section>
+
+    <!-- 67 Spam Simulator -->
+    <section class="spam-zone">
+        <h2>67 SPAM SIMULAATOR</h2>
+        <p>Vajuta nuppu ja koge, milline on elu inimeste seas, kes ei lõpeta kunagi selle ütlemist.</p>
+        <button class="spam-btn" id="spamBtn">KUUSSEITSE!</button>
+        <div class="spam-output" id="spamOutput"></div>
+        <p class="spam-counter">Sinu kaotatud ajurakke: <span id="spamCount">0</span></p>
+    </section>
+
+    <footer>
+        <p>Tehtud <span>ajusurmaga</span> ja <span>JavaScriptiga</span>. Dictionary.com nimetas selle aasta sõnaks. Me oleme kadunud.</p>
+        <p style="margin-top: 10px;">
+            Vaata ka:
+            <a href="index.html" style="color: #ff4444;">Ma vihkan squishisid</a> |
+            <a href="slime.html" style="color: #00ff44;">Ma vihkan slime'i</a> |
+            <a href="popit.html" style="color: #cc44ff;">Ma vihkan pop it'e</a>
+        </p>
+    </footer>
+
+    <script>
+        // Brainrot meter
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('brainrotFill').style.width = '100%';
+                setTimeout(() => {
+                    const label = document.getElementById('brainrotLabel');
+                    label.textContent = 'AJUSURM KINNITATUD — RAVI EI EKSISTEERI';
+                    label.style.color = '#00aaff';
+                    label.style.fontWeight = '900';
+                }, 2500);
+            }, 500);
+        });
+
+        // Floating 67 background
+        function createBg67() {
+            const el = document.createElement('div');
+            el.className = 'bg-67';
+            el.textContent = '67';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = 4 + Math.random() * 6 + 's';
+            el.style.fontSize = (2 + Math.random() * 4) + 'rem';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 10000);
+        }
+        setInterval(createBg67, 1000);
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reason-card').forEach(card => observer.observe(card));
+
+        // 67 Swatter Game
+        const arena = document.getElementById('swatArena');
+        const swatCountEl = document.getElementById('swatCount');
+        let swatCount = 0;
+
+        const sixtySevenVariants = [
+            '67', '6-7', 'SIX SEVEN', '6️⃣7️⃣', 'kuusseitse',
+            'KUUSSEITSE', '67!!', 'sixx seven', '6..7',
+            '67 🫴', 'doot doot 67', '67 kid', 'Mr. 6-7',
+        ];
+
+        function spawn67() {
+            const el = document.createElement('div');
+            el.className = 'floating-67';
+            el.textContent = sixtySevenVariants[Math.floor(Math.random() * sixtySevenVariants.length)];
+
+            const maxX = arena.offsetWidth - 120;
+            const maxY = arena.offsetHeight - 50;
+            el.style.left = Math.max(10, Math.random() * maxX) + 'px';
+            el.style.top = Math.max(10, Math.random() * maxY) + 'px';
+            el.style.animationDelay = Math.random() * 2 + 's';
+            el.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (el.classList.contains('swatted')) return;
+
+                el.classList.add('swatted');
+                swatCount++;
+                swatCountEl.textContent = swatCount;
+
+                document.body.classList.add('screen-shake');
+                setTimeout(() => document.body.classList.remove('screen-shake'), 300);
+
+                for (let i = 0; i < 4; i++) {
+                    spawnParticle(e.clientX, e.clientY);
+                }
+
+                setTimeout(() => {
+                    el.remove();
+                    spawn67();
+                    // They multiply...
+                    if (Math.random() > 0.6) spawn67();
+                }, 500);
+            });
+
+            arena.appendChild(el);
+        }
+
+        for (let i = 0; i < 8; i++) spawn67();
+
+        // Particles
+        const hateWords = ['VAIT!', 'LÕPETA!', 'EI JÄLLE!', 'BRAINROT!', '💀', '🧠💥', '🤯', 'AITAB!', 'MIKS?!'];
+
+        function spawnParticle(x, y) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.textContent = hateWords[Math.floor(Math.random() * hateWords.length)];
+            p.style.left = x + (Math.random() * 60 - 30) + 'px';
+            p.style.top = y + 'px';
+            p.style.color = `hsl(${200 + Math.random() * 20}, 100%, ${50 + Math.random() * 30}%)`;
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1500);
+        }
+
+        document.addEventListener('click', (e) => spawnParticle(e.clientX, e.clientY));
+
+        // 67 Spam Simulator
+        let spamCount = 0;
+        const spamOutput = document.getElementById('spamOutput');
+        const spamCountEl = document.getElementById('spamCount');
+
+        document.getElementById('spamBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            spamCount++;
+            spamCountEl.textContent = spamCount;
+
+            // Build up 67 string
+            let str = '';
+            for (let i = 0; i < Math.min(spamCount, 30); i++) {
+                str += '67 ';
+            }
+            spamOutput.textContent = str;
+            spamOutput.style.transform = 'scale(1.1)';
+            setTimeout(() => spamOutput.style.transform = 'scale(1)', 200);
+
+            // Change button text randomly
+            const msgs = ['KUUSSEITSE!', '67!!!', 'SIX SEVEN!', 'JÄLLE!', 'MIKS?!', 'EI!', '67 67 67!'];
+            document.getElementById('spamBtn').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+
+            for (let i = 0; i < 5; i++) {
+                spawnParticle(e.clientX, e.clientY);
+            }
+
+            // Chaos: after enough clicks, the page goes crazy
+            if (spamCount > 15) {
+                document.body.style.filter = `hue-rotate(${spamCount * 10}deg)`;
+            }
+        });
+
+        // Rotating titles
+        const titles = [
+            'MA VIHKAN 67 MEEMI',
+            'KUUSSEITSE = AJUSURM',
+            'LÕPETAGE 67',
+            '67 ON BRAINROT',
+            'DOOT DOOT EI JÄLLE'
+        ];
+        let idx = 0;
+        setInterval(() => {
+            idx = (idx + 1) % titles.length;
+            document.getElementById('title').textContent = titles[idx];
+        }, 3000);
+    </script>
+</body>
+</html>
