@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MA VIHKAN SLIME'I</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #040d04;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* Dripping slime background effect */
+        .drip {
+            position: fixed;
+            top: -20px;
+            width: 8px;
+            background: linear-gradient(180deg, #1aff1a33, #00ff0011);
+            border-radius: 0 0 50% 50%;
+            z-index: 0;
+            animation: dripDown 4s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes dripDown {
+            0% { height: 0; opacity: 0.6; }
+            80% { opacity: 0.4; }
+            100% { height: 100vh; opacity: 0; }
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, #0a1f0a 0%, #020802 70%);
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-family: 'Bangers', cursive;
+            font-size: clamp(3rem, 10vw, 8rem);
+            text-align: center;
+            color: #00ff44;
+            text-shadow: 0 0 20px rgba(0, 255, 50, 0.5), 0 0 60px rgba(0, 255, 50, 0.2), 0 4px 0 #005500;
+            animation: slimePulse 2s ease-in-out infinite;
+            letter-spacing: 4px;
+            user-select: none;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 3vw, 1.8rem);
+            color: #66ff88;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0.8;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        .disgust-meter-container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .disgust-meter-container p {
+            font-size: 1.2rem;
+            color: #44ff66;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .disgust-meter {
+            width: 300px;
+            height: 30px;
+            background: #1a2a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #00ff44;
+            position: relative;
+        }
+
+        .disgust-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22cc44, #00ff44, #aaff00);
+            border-radius: 15px;
+            transition: width 2.5s ease-out;
+            box-shadow: 0 0 20px rgba(0, 255, 50, 0.5);
+            position: relative;
+        }
+
+        .disgust-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 12px);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            color: #44ff66;
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        /* Reasons */
+        .reasons {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reasons h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33ff55;
+            text-align: center;
+            margin-bottom: 60px;
+            text-shadow: 0 0 15px rgba(0, 255, 50, 0.4);
+        }
+
+        .reason-card {
+            background: linear-gradient(135deg, #0a1a0a, #0d200d);
+            border: 1px solid #1a3a1a;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reason-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .reason-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #00ff44, #88ff00, #00ff44);
+        }
+
+        .reason-card .number {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #00ff44;
+            opacity: 0.15;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+
+        .reason-card h3 {
+            font-size: 1.5rem;
+            color: #66ff88;
+            margin-bottom: 10px;
+        }
+
+        .reason-card p {
+            color: #99cc99;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Slime cleanup game */
+        .cleaner {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #0d1a0d 0%, #040d04 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .cleaner h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33ff55;
+            margin-bottom: 20px;
+        }
+
+        .cleaner > p {
+            color: #88bb88;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .slime-canvas {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 0 auto;
+            background: #080f08;
+            border-radius: 20px;
+            border: 2px solid #1a3a1a;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .slime-blob {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50% 40% 50% 40%;
+            background: radial-gradient(ellipse at 30% 30%, #55ff77, #22aa33, #117722);
+            box-shadow: 0 0 15px rgba(0, 255, 50, 0.4), inset 0 -5px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            animation: blobWobble 2s ease-in-out infinite;
+            transition: transform 0.15s;
+            user-select: none;
+        }
+
+        .slime-blob::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 18px;
+            width: 15px;
+            height: 10px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+        }
+
+        .slime-blob:hover {
+            transform: scale(1.2);
+            filter: brightness(1.3);
+        }
+
+        .slime-blob.cleaned {
+            animation: cleanUp 0.6s forwards !important;
+        }
+
+        .clean-count {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: #44ff66;
+            margin-top: 20px;
+        }
+
+        /* Horror stories */
+        .stories {
+            padding: 80px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stories h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33ff55;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .story {
+            text-align: center;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-top: 1px solid #1a3a1a;
+            border-bottom: 1px solid #1a3a1a;
+            position: relative;
+        }
+
+        .story .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .story p {
+            font-size: 1.3rem;
+            color: #88ff99;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .story .context {
+            margin-top: 15px;
+            color: #447744;
+            font-size: 0.9rem;
+            font-style: normal;
+        }
+
+        /* Petition */
+        .petition {
+            padding: 80px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, #0d1a0d 0%, #040d04 70%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .petition h2 {
+            font-family: 'Bangers', cursive;
+            font-size: 3rem;
+            color: #33ff55;
+            margin-bottom: 20px;
+        }
+
+        .petition p {
+            color: #88bb88;
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .sign-btn {
+            background: linear-gradient(135deg, #00cc33, #00ff44);
+            color: #003300;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(0, 255, 50, 0.3);
+        }
+
+        .sign-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 255, 50, 0.5);
+        }
+
+        .sign-btn:active {
+            transform: scale(0.95);
+        }
+
+        .signature-count {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #44ff66;
+            font-family: 'Bangers', cursive;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #335533;
+            border-top: 1px solid #1a2a1a;
+            position: relative;
+            z-index: 1;
+        }
+
+        footer span {
+            color: #00ff44;
+        }
+
+        footer a {
+            color: #ff4444;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            z-index: 1000;
+            animation: particleFade 1.5s forwards;
+        }
+
+        /* Animations */
+        @keyframes slimePulse {
+            0%, 100% { transform: scale(1) skewX(0deg); }
+            25% { transform: scale(1.02) skewX(-1deg); }
+            75% { transform: scale(0.98) skewX(1deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes blobWobble {
+            0%, 100% { border-radius: 50% 40% 50% 40%; transform: translateY(0); }
+            33% { border-radius: 40% 50% 40% 50%; transform: translateY(-8px); }
+            66% { border-radius: 45% 45% 50% 40%; transform: translateY(4px); }
+        }
+
+        @keyframes cleanUp {
+            0% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.4); opacity: 0.8; filter: brightness(2) saturate(0); }
+            100% { transform: scale(0); opacity: 0; filter: brightness(3) saturate(0); }
+        }
+
+        @keyframes particleFade {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(0.3); }
+        }
+
+        .screen-shake {
+            animation: screenShake 0.3s ease-out;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-4px, 2px); }
+            40% { transform: translate(4px, -2px); }
+            60% { transform: translate(-2px, 4px); }
+            80% { transform: translate(2px, -4px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1 id="title">MA VIHKAN SLIME'I</h1>
+        <p class="subtitle">See kleepuv, veniv, vastik jama. Igal pool. Kätel, laual, vaibas, hinges.</p>
+        <div class="disgust-meter-container">
+            <p>VASTIKUSE TASE:</p>
+            <div class="disgust-meter">
+                <div class="disgust-fill" id="disgustFill"></div>
+            </div>
+            <p id="disgustLabel" style="margin-top: 10px; font-size: 0.9rem; color: #66ff88;">Mõõdan vastikust...</p>
+        </div>
+        <p class="scroll-hint">Keri alla, et sukelduda jälkusesse</p>
+    </section>
+
+    <!-- Reasons -->
+    <section class="reasons">
+        <h2>MIKS SLIME ON MAAILMA HALVIM ASI</h2>
+
+        <div class="reason-card" data-delay="0">
+            <span class="number">#1</span>
+            <h3>See KLEEPUB kõige külge</h3>
+            <p>Vaip? Kleepub. Juuksed? Kleepub. Diivani vahele? Jah, nüüd elab see seal. Slime on nagu parasiit, kes ei lahku kunagi. Sa leiad seda veel AASTAID hiljem kohtadest, mille olemasolust sa ei teadnudki.</p>
+        </div>
+
+        <div class="reason-card" data-delay="100">
+            <span class="number">#2</span>
+            <h3>See LÕHN</h3>
+            <p>Kas see on liim? Keemia? Mõne lapse "lisatud lõhnaaine" mis haistab nagu laboris plahvatas parfüümipomm? Ja mõne päeva pärast, kui see hallitama hakkab... jumal hoidku su ninasõõrmeid.</p>
+        </div>
+
+        <div class="reason-card" data-delay="200">
+            <span class="number">#3</span>
+            <h3>Seda tehakse KÖÖGIS</h3>
+            <p>Lapsed vallutavad köögi. Liim, borakspulber, värv ja glitter IGAL POOL. Su köök näeb välja nagu Shrek aevastaks peale tsunamit. Ja keegi ei korista.</p>
+        </div>
+
+        <div class="reason-card" data-delay="300">
+            <span class="number">#4</span>
+            <h3>ASMR videod sellega</h3>
+            <p>Miljonid inimesed VAATAVAD ja KUULAVAD kuidas keegi slime'i venitab, pigistab ja poketab. See niiske, kleepuv heli. Vabatahtlikult. Lõbuks. Me oleme liigina läbi kukkunud.</p>
+        </div>
+
+        <div class="reason-card" data-delay="400">
+            <span class="number">#5</span>
+            <h3>See KUIVAB ära ja sureb</h3>
+            <p>Kogu see vaev: valmistamine, segamine, "aktiveerimine" — ja kahe päeva pärast on see kõva klump. Siis tehakse uus ports. Lõputu tsükkel, nagu Sisyphose müüt, aga kleepuvam.</p>
+        </div>
+
+        <div class="reason-card" data-delay="500">
+            <span class="number">#6</span>
+            <h3>Riided on IGAVESEKS rikutud</h3>
+            <p>Üks puudutus ja su lemmiklemmik T-särk on nüüd "slime'iga kunstteos". Masin ei pese välja. Käsipesu ei pese välja. Mitte miski ei pese välja. See särk on nüüd slime'i oma.</p>
+        </div>
+
+        <div class="reason-card" data-delay="600">
+            <span class="number">#7</span>
+            <h3>Boraks on KEMIKAAL</h3>
+            <p>Vanemad lihtsalt annavad lastele boraksi ja liimi ja ütlevad "lõbutse!" Kogu internet: "See on ohutu!" Nahk: "Ma pole nõus." Boraks on tööstuskemikaal, mitte mänguasi.</p>
+        </div>
+    </section>
+
+    <!-- Slime Cleanup Game -->
+    <section class="cleaner">
+        <h2>PUHASTA SLIME</h2>
+        <p>Kliki slime'i klompidel, et need ära koristada. Keegi peab ju.</p>
+        <div class="slime-canvas" id="slimeCanvas"></div>
+        <p class="clean-count">Koristatud: <span id="cleanCount">0</span> klompi</p>
+    </section>
+
+    <!-- Horror Stories -->
+    <section class="stories">
+        <h2>ÕUDUSLOOD</h2>
+
+        <div class="story">
+            <div class="emoji">🛋️</div>
+            <p>"Leidsin slime'i diivanist. Mitte pealt. SEEST. See oli imbunud läbi kanga ja oli nüüd osa mööblist."</p>
+            <div class="context">- Iga lapsevanem kunagi</div>
+        </div>
+
+        <div class="story">
+            <div class="emoji">👩‍💻</div>
+            <p>"Keegi tõi slime'i kontorisse 'stressivabastajana'. See sattus klaviatuuril. Tühikuklahv ei töötanud enam kunagi samamoodi."</p>
+            <div class="context">- IT-osakond, ilmselt</div>
+        </div>
+
+        <div class="story">
+            <div class="emoji">🐕</div>
+            <p>"Koer sõi slime'i ära. Veterinaariarve oli suurem kui slime'i tegemiseks kasutatud liimi kogumaksumus kogu ajaloos."</p>
+            <div class="context">- Loomaarsti kõige hullem päev</div>
+        </div>
+
+        <div class="story">
+            <div class="emoji">✈️</div>
+            <p>"Laps võttis slime'i lennukisse. See avanes turbulentsi ajal. Kõik said slime'i. KÕIK."</p>
+            <div class="context">- Rida 14, mitte kunagi unusta</div>
+        </div>
+    </section>
+
+    <!-- Petition -->
+    <section class="petition">
+        <h2>ALLKIRJASTA PETITSIOON</h2>
+        <p>Liitu võitlusega slime'i vastu. Iga klikk on hääl puhta, kleepumatu maailma poolt.</p>
+        <button class="sign-btn" id="signBtn">ALLKIRJASTA SIIN</button>
+        <p class="signature-count"><span id="sigCount">4,891,203</span> vihastavat kodanikku</p>
+    </section>
+
+    <footer>
+        <p>Tehtud <span>jälestuse</span> ja <span>JavaScriptiga</span>.</p>
+        <p style="margin-top: 10px;">Vaata ka: <a href="index.html">Ma vihkan squishisid</a></p>
+    </footer>
+
+    <script>
+        // Disgust meter
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('disgustFill').style.width = '100%';
+                setTimeout(() => {
+                    const label = document.getElementById('disgustLabel');
+                    label.textContent = 'MÕÕTMISVAHEND KATKI — LIIGA PALJU VASTIKUST';
+                    label.style.color = '#00ff44';
+                    label.style.fontWeight = '900';
+                }, 2500);
+            }, 500);
+        });
+
+        // Dripping slime background
+        function createDrip() {
+            const drip = document.createElement('div');
+            drip.className = 'drip';
+            drip.style.left = Math.random() * 100 + 'vw';
+            drip.style.animationDuration = 3 + Math.random() * 4 + 's';
+            document.body.appendChild(drip);
+            setTimeout(() => drip.remove(), 7000);
+        }
+        setInterval(createDrip, 800);
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.dataset.delay || 0;
+                    setTimeout(() => entry.target.classList.add('visible'), delay);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reason-card').forEach(card => observer.observe(card));
+
+        // Slime Cleanup Game
+        const canvas = document.getElementById('slimeCanvas');
+        const cleanCountEl = document.getElementById('cleanCount');
+        let cleanCount = 0;
+
+        function spawnBlob() {
+            const blob = document.createElement('div');
+            blob.className = 'slime-blob';
+
+            const maxX = canvas.offsetWidth - 80;
+            const maxY = canvas.offsetHeight - 80;
+            blob.style.left = Math.random() * maxX + 'px';
+            blob.style.top = Math.random() * maxY + 'px';
+            blob.style.width = (40 + Math.random() * 50) + 'px';
+            blob.style.height = (40 + Math.random() * 50) + 'px';
+            blob.style.animationDelay = Math.random() * 2 + 's';
+
+            // Random green shade
+            const hue = 100 + Math.random() * 40;
+            const light = 40 + Math.random() * 20;
+            blob.style.background = `radial-gradient(ellipse at 30% 30%, hsl(${hue}, 100%, ${light + 20}%), hsl(${hue}, 80%, ${light}%), hsl(${hue}, 70%, ${light - 15}%))`;
+
+            blob.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (blob.classList.contains('cleaned')) return;
+
+                blob.classList.add('cleaned');
+                cleanCount++;
+                cleanCountEl.textContent = cleanCount;
+
+                document.body.classList.add('screen-shake');
+                setTimeout(() => document.body.classList.remove('screen-shake'), 300);
+
+                for (let i = 0; i < 4; i++) {
+                    spawnParticle(e.clientX, e.clientY);
+                }
+
+                setTimeout(() => {
+                    blob.remove();
+                    spawnBlob();
+                }, 600);
+            });
+
+            canvas.appendChild(blob);
+        }
+
+        for (let i = 0; i < 10; i++) spawnBlob();
+
+        // Particles
+        const hateWords = ['BLÄÄ!', 'VASTIK!', 'KLEEPUB!', 'JÄLK!', '🤢', '🧹', '✨', 'PUHAS!', 'ÄRA!'];
+
+        function spawnParticle(x, y) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.textContent = hateWords[Math.floor(Math.random() * hateWords.length)];
+            p.style.left = x + (Math.random() * 60 - 30) + 'px';
+            p.style.top = y + 'px';
+            p.style.color = `hsl(${100 + Math.random() * 40}, 100%, ${50 + Math.random() * 30}%)`;
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1500);
+        }
+
+        document.addEventListener('click', (e) => spawnParticle(e.clientX, e.clientY));
+
+        // Petition counter
+        let sigCount = 4891203;
+        const sigEl = document.getElementById('sigCount');
+        document.getElementById('signBtn').addEventListener('click', () => {
+            sigCount += Math.floor(Math.random() * 50) + 10;
+            sigEl.textContent = sigCount.toLocaleString('et-EE');
+
+            const btn = document.getElementById('signBtn');
+            btn.textContent = 'ALLKIRJASTATUD! KLIKI VEEL!';
+            btn.style.background = 'linear-gradient(135deg, #ff4444, #ff6644)';
+            btn.style.color = '#fff';
+
+            setTimeout(() => {
+                btn.textContent = 'ALLKIRJASTA UUESTI';
+                btn.style.background = 'linear-gradient(135deg, #00cc33, #00ff44)';
+                btn.style.color = '#003300';
+            }, 1500);
+        });
+
+        // Rotating titles
+        const titles = [
+            'MA VIHKAN SLIME\'I',
+            'SLIME ON JÄLK',
+            'KLEEPUV KATASTROOF',
+            'SLIME = ÕUDUS',
+            'KEELA SLIME ÄRA'
+        ];
+        let idx = 0;
+        setInterval(() => {
+            idx = (idx + 1) % titles.length;
+            document.getElementById('title').textContent = titles[idx];
+        }, 3000);
+    </script>
+</body>
+</html>
